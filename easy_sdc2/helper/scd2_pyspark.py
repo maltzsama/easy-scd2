@@ -9,10 +9,8 @@ from pyspark.sql.functions import (
     monotonically_increasing_id,
     expr,
 )
-from typing import Set
+from typing import Set, Optional
 from functools import reduce
-
-from pyspark.sql.types import BooleanType
 
 
 def generate_comparison_conditions(
@@ -31,14 +29,14 @@ def apply_scd_type2(
     target: DataFrame,
     pk: str,
     non_versioned_fields: Set[str] = None,
-    control_column: str = "update_date",
-    start_column="valid_from",
-    end_column="valid_to",
-    flag_column="is_current",
-    surrogate_key_name="surrogate_key",
-    surrogate_key_strategy: str = "uuid",
-    start_period="1900-01-01 00:00:00",
-    future_timestamp="3000-01-01 00:00:00",
+    control_column: Optional[str] = "update_date",
+    start_column: Optional[str] = "valid_from",
+    end_column: Optional[str] = "valid_to",
+    flag_column: Optional[str] = "is_current",
+    surrogate_key_name: Optional[str] = "surrogate_key",
+    surrogate_key_strategy: Optional[str] = "uuid",
+    start_period: Optional[str] = "1900-01-01 00:00:00",
+    future_timestamp: Optional[str] = "3000-01-01 00:00:00",
 ) -> DataFrame:
 
     def create_surrogate_key(df: DataFrame) -> DataFrame:
@@ -115,20 +113,15 @@ def apply_scd_type2(
     print(source.show(truncate=False))
     print(target.show(truncate=False))
 
-
     print(rec_changed_df.printSchema())
     print(rec_hist_df.printSchema())
     print(rec_new_df.printSchema())
     print(rec_unchanged_df.printSchema())
 
-
-
     print(rec_changed_df.show(truncate=False))
     print(rec_hist_df.show(truncate=False))
     print(rec_new_df.show(truncate=False))
     print(rec_unchanged_df.show(truncate=False))
-
-
 
     union_all_df = (
         rec_changed_df.unionByName(rec_hist_df)
