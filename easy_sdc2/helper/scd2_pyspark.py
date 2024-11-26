@@ -38,7 +38,6 @@ def apply_scd_type2(
     surrogate_key_strategy: Optional[str] = "uuid",
     start_period: Optional[str] = "1900-01-01 00:00:00",
     future_timestamp: Optional[str] = "3000-01-01 00:00:00",
-    id_sequence: Optional[int] = 0,
 ) -> DataFrame:
 
     def create_surrogate_key(df: DataFrame, surrogate_key_strategy: str = "uuid") -> DataFrame: 
